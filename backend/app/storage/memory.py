@@ -122,6 +122,14 @@ class InMemoryUnitRepository:
         unit_ids = self._units_by_satellite.get(satellite_id, [])
         return [self._units[uid] for uid in unit_ids if uid in self._units]
 
+    def list_all(self) -> list[Unit]:
+        """List all units.
+
+        Returns:
+            List of all units.
+        """
+        return list(self._units.values())
+
     def delete(self, unit_id: UUID) -> bool:
         """Delete a unit by ID.
 

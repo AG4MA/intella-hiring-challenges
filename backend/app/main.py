@@ -52,7 +52,12 @@ async def lifespan(app: FastAPI):
     telemetry_repo = InMemoryTelemetryRepository()
 
     # Initialize services
-    satellite_service = SatelliteService(satellite_repo)
+    satellite_service = SatelliteService(
+        satellite_repo,
+        unit_repo,
+        parameter_repo,
+        telemetry_repo,
+    )
     unit_service = UnitService(unit_repo, satellite_repo)
     parameter_service = ParameterService(parameter_repo, unit_repo)
     telemetry_service = TelemetryService(
