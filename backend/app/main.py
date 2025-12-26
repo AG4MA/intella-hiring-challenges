@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from app.api.middleware import RequestLoggingMiddleware
 from app.api.v1 import router as v1_router
 from app.core.settings import get_settings
 from app.services.initial_data import create_initial_data
@@ -117,6 +118,9 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+# Add request logging middleware
+app.add_middleware(RequestLoggingMiddleware)
 
 # Include v1 API router
 app.include_router(v1_router.router, prefix="/v1", tags=["v1"])
