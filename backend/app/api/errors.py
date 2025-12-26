@@ -45,7 +45,7 @@ def _get_status_code_for_error(error: DomainError) -> int:
     error_status_map = {
         NotFoundError: status.HTTP_404_NOT_FOUND,
         ConflictError: status.HTTP_409_CONFLICT,
-        DomainValidationError: status.HTTP_422_UNPROCESSABLE_CONTENT,
+        DomainValidationError: 422,
     }
     for error_type, status_code in error_status_map.items():
         if isinstance(error, error_type):

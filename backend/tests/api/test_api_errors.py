@@ -2,7 +2,7 @@
 
 from typing import Any, cast
 
-from fastapi import HTTPException, status
+from fastapi import HTTPException
 
 from app.api.errors import domain_error_to_http_exception
 from app.domain.errors import (
@@ -22,7 +22,7 @@ class TestDomainErrorToHttpException:
         http_exc = domain_error_to_http_exception(error)
 
         assert isinstance(http_exc, HTTPException)
-        assert http_exc.status_code == status.HTTP_404_NOT_FOUND
+        assert http_exc.status_code == 404
         detail = cast(dict[str, Any], http_exc.detail)
         assert detail["message"] == "Satellite not found"
         assert detail["details"]["satellite_id"] == "abc-123"
@@ -32,7 +32,7 @@ class TestDomainErrorToHttpException:
         error = ConflictError("Satellite name already exists", {"name": "TestSat"})
         http_exc = domain_error_to_http_exception(error)
 
-        assert http_exc.status_code == status.HTTP_409_CONFLICT
+        assert http_exc.status_code == 409
         detail = cast(dict[str, Any], http_exc.detail)
         assert detail["message"] == "Satellite name already exists"
         assert detail["details"]["name"] == "TestSat"
@@ -45,7 +45,7 @@ class TestDomainErrorToHttpException:
         )
         http_exc = domain_error_to_http_exception(error)
 
-        assert http_exc.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+        assert http_exc.status_code == 422
         detail = cast(dict[str, Any], http_exc.detail)
         assert detail["message"] == "Invalid parameter range"
         assert detail["details"]["field"] == "value"
@@ -55,7 +55,7 @@ class TestDomainErrorToHttpException:
         error = DomainError("Unknown error occurred")
         http_exc = domain_error_to_http_exception(error)
 
-        assert http_exc.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+        assert http_exc.status_code == 500
         detail = cast(dict[str, Any], http_exc.detail)
         assert detail["message"] == "Unknown error occurred"
         assert detail["details"] is None
@@ -65,7 +65,7 @@ class TestDomainErrorToHttpException:
         error = NotFoundError("Resource not found")
         http_exc = domain_error_to_http_exception(error)
 
-        assert http_exc.status_code == status.HTTP_404_NOT_FOUND
+        assert http_exc.status_code == 404
         detail = cast(dict[str, Any], http_exc.detail)
         assert detail["message"] == "Resource not found"
         assert detail["details"] is None
@@ -75,7 +75,7 @@ class TestDomainErrorToHttpException:
         error = ConflictError("Conflict occurred", details={})
         http_exc = domain_error_to_http_exception(error)
 
-        assert http_exc.status_code == status.HTTP_409_CONFLICT
+        assert http_exc.status_code == 409
         detail = cast(dict[str, Any], http_exc.detail)
         assert detail["message"] == "Conflict occurred"
         assert detail["details"] == {}
@@ -92,7 +92,7 @@ class TestDomainErrorToHttpException:
         error = DomainValidationError("Multiple validation failures", details=details)
         http_exc = domain_error_to_http_exception(error)
 
-        assert http_exc.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
+        assert http_exc.status_code == 422
         detail = cast(dict[str, Any], http_exc.detail)
         assert detail["details"]["field"] == "telemetry_data"
         assert len(detail["details"]["errors"]) == 2

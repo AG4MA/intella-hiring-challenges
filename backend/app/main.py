@@ -21,7 +21,7 @@ from app.storage.memory import (
     InMemoryTelemetryRepository,
     InMemoryUnitRepository,
 )
-from app.workers.telemetry_generator import generate_backfill
+from app.workers.telemetry_generator import generate_backfill, run_live
 
 
 def configure_logging(log_level: str) -> None:
@@ -99,17 +99,32 @@ async def lifespan(app: FastAPI):
 
     backfill_task = asyncio.create_task(run_backfill())
 
-    logger.info("Application ready (backfill running in background)")
+    # Start live telemetry generation
+    live_task = asyncio.create_task(
+        run_live(
+            telemetry_service,
+            parameter_service,
+            settings,
+        )
+    )
+
+    logger.info("Application ready (backfill and live generation running)")
 
     yield
 
-    # Cancel backfill if still running
+    # Cancel background tasks
     if not backfill_task.done():
         backfill_task.cancel()
         try:
             await backfill_task
         except asyncio.CancelledError:
             pass
+
+    live_task.cancel()
+    try:
+        await live_task
+    except asyncio.CancelledError:
+        pass
 
 
 app = FastAPI(
