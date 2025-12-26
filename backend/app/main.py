@@ -2,11 +2,14 @@ import asyncio
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 
+from app.api.errors import domain_error_to_http_exception
 from app.api.middleware import RequestLoggingMiddleware
 from app.api.v1 import router as v1_router
 from app.core.settings import get_settings
+from app.domain.errors import DomainError
 from app.services.initial_data import create_initial_data
 from app.services.parameter import ParameterService
 from app.services.satellite import SatelliteService
@@ -118,6 +121,17 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+
+@app.exception_handler(DomainError)
+async def domain_exception_handler(request: Request, exc: DomainError):
+    """Handle domain errors and convert to HTTP responses."""
+    http_exc = domain_error_to_http_exception(exc)
+    return JSONResponse(
+        status_code=http_exc.status_code,
+        content=http_exc.detail,
+    )
+
 
 # Add request logging middleware
 app.add_middleware(RequestLoggingMiddleware)

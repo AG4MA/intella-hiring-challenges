@@ -8,15 +8,11 @@ from fastapi.testclient import TestClient
 from app.main import app
 
 
-pytestmark = pytest.mark.skip(
-    reason="TestClient compatibility issue with lifespan - manual verification only"
-)
-
-
 @pytest.fixture
 def client():
     """Create test client."""
-    return TestClient(app)
+    with TestClient(app) as c:
+        yield c
 
 
 @pytest.fixture
@@ -85,7 +81,7 @@ class TestGetSatellite:
         fake_id = str(uuid4())
         response = client.get(f"/v1/satellites/{fake_id}")
         assert response.status_code == 404
-        assert "not found" in response.json()["detail"]["message"].lower()
+        assert "not found" in response.json()["message"].lower()
 
     def test_get_satellite_invalid_uuid_returns_422(self, client):
         """Test invalid UUID format returns 422."""
@@ -167,7 +163,7 @@ class TestActivateSatellite:
         # Try to activate again
         response = client.post(f"/v1/satellites/{sample_satellite_id}/activate")
         assert response.status_code == 409
-        assert "already active" in response.json()["detail"]["message"].lower()
+        assert "already active" in response.json()["message"].lower()
 
     def test_activate_nonexistent_satellite_returns_404(self, client):
         """Test activating nonexistent satellite returns 404."""
@@ -208,7 +204,7 @@ class TestDisableSatellite:
         # Try to disable again
         response = client.post(f"/v1/satellites/{satellite_id}/disable")
         assert response.status_code == 409
-        assert "already disabled" in response.json()["detail"]["message"].lower()
+        assert "already disabled" in response.json()["message"].lower()
 
     def test_disable_nonexistent_satellite_returns_404(self, client):
         """Test disabling nonexistent satellite returns 404."""
