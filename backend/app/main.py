@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from app.api.v1 import router as v1_router
 from app.core.settings import get_settings
 from app.services.initial_data import create_initial_data
 from app.services.parameter import ParameterService
@@ -103,9 +104,22 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Backend API",
+    title="Satellite Telemetry API",
+    description="""
+    REST API for managing satellite telemetry data.
+
+    Features:
+    - Satellite and unit management
+    - Real-time telemetry data ingestion
+    - Parameter monitoring and querying
+    - Automatic data generation and backfill
+    """,
+    version="1.0.0",
     lifespan=lifespan,
 )
+
+# Include v1 API router
+app.include_router(v1_router.router, prefix="/v1", tags=["v1"])
 
 
 @app.get("/health")
