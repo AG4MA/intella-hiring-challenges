@@ -1,5 +1,6 @@
 """Base repository protocols and interfaces."""
 
+from datetime import datetime
 from typing import Protocol
 from uuid import UUID
 
@@ -194,5 +195,23 @@ class TelemetryRepository(Protocol):
 
         Returns:
             List of telemetry data for the parameter, sorted by timestamp.
+        """
+        ...
+
+    def get_by_parameter_time_range(
+        self,
+        parameter_id: UUID,
+        start_time: datetime,
+        end_time: datetime,
+    ) -> list[TelemetryData]:
+        """Get telemetry data for a parameter within a time range.
+
+        Args:
+            parameter_id: The parameter ID.
+            start_time: Start of time range (inclusive).
+            end_time: End of time range (inclusive).
+
+        Returns:
+            List of telemetry data within the time range, sorted by timestamp.
         """
         ...
