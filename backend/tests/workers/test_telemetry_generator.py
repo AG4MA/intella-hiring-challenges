@@ -215,7 +215,6 @@ def test_generate_backfill_uses_deterministic_seed(services, settings):
 
 
 @pytest.mark.skip(reason="Async test - manual verification only")
-@pytest.mark.asyncio
 async def test_run_live_generates_points_periodically(services, settings):
     """Test live generation creates points at intervals."""
     # Arrange
@@ -267,7 +266,6 @@ async def test_run_live_generates_points_periodically(services, settings):
 
 
 @pytest.mark.skip(reason="Async test - manual verification only")
-@pytest.mark.asyncio
 async def test_run_live_stops_on_event(services, settings):
     """Test live generation stops when event is set."""
     # Arrange

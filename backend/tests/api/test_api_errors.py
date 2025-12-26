@@ -45,7 +45,7 @@ class TestDomainErrorToHttpException:
         )
         http_exc = domain_error_to_http_exception(error)
 
-        assert http_exc.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert http_exc.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
         detail = cast(dict[str, Any], http_exc.detail)
         assert detail["message"] == "Invalid parameter range"
         assert detail["details"]["field"] == "value"
@@ -92,7 +92,7 @@ class TestDomainErrorToHttpException:
         error = DomainValidationError("Multiple validation failures", details=details)
         http_exc = domain_error_to_http_exception(error)
 
-        assert http_exc.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+        assert http_exc.status_code == status.HTTP_422_UNPROCESSABLE_CONTENT
         detail = cast(dict[str, Any], http_exc.detail)
         assert detail["details"]["field"] == "telemetry_data"
         assert len(detail["details"]["errors"]) == 2
