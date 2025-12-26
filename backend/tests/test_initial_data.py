@@ -1,9 +1,9 @@
 """Unit tests for initial data generation."""
 
 from app.domain.models import ParameterType, SatelliteStatus
+from app.services.initial_data import create_initial_data
 from app.services.parameter import ParameterService
 from app.services.satellite import SatelliteService
-from app.services.initial_data import create_initial_data
 from app.services.telemetry import TelemetryService
 from app.services.unit import UnitService
 from app.storage.memory import (
@@ -84,6 +84,6 @@ def test_initial_data_creates_valid_structure():
         ParameterType.TEMPERATURE,
         ParameterType.HUMIDITY,
     }
-    assert expected_types.issubset(
-        param_types
-    ), f"Expected all types {expected_types} to be present, got {param_types}"
+    assert expected_types.issubset(param_types), (
+        f"Expected all types {expected_types} to be present, got {param_types}"
+    )

@@ -4,9 +4,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.core.settings import get_settings
+from app.services.initial_data import create_initial_data
 from app.services.parameter import ParameterService
 from app.services.satellite import SatelliteService
-from app.services.initial_data import create_initial_data
 from app.services.telemetry import TelemetryService
 from app.services.unit import UnitService
 from app.storage.memory import (
