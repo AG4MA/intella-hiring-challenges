@@ -3,38 +3,6 @@
 from datetime import UTC, datetime
 from uuid import uuid4
 
-import pytest
-from fastapi.testclient import TestClient
-
-from app.main import app
-
-
-@pytest.fixture
-def client():
-    """Create test client."""
-    with TestClient(app) as c:
-        yield c
-
-
-@pytest.fixture
-def sample_satellite_id(client):
-    """Get a satellite ID from the initial data."""
-    response = client.get("/v1/satellites/")
-    assert response.status_code == 200
-    satellites = response.json()
-    assert len(satellites) > 0
-    return satellites[0]["id"]
-
-
-@pytest.fixture
-def sample_satellite(client):
-    """Get first satellite from initial data."""
-    response = client.get("/v1/satellites/")
-    assert response.status_code == 200
-    satellites = response.json()
-    assert len(satellites) > 0
-    return satellites[0]
-
 
 class TestListSatellites:
     """Tests for GET /v1/satellites/."""
