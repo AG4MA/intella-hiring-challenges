@@ -26,3 +26,6 @@ select = ["E", "F", "I", "W"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
+
+[tool.pytest_asyncio]
+asyncio_default_fixture_loop_scope = "function"

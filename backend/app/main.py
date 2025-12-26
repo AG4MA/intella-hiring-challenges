@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 
@@ -15,6 +16,7 @@ from app.storage.memory import (
     InMemoryTelemetryRepository,
     InMemoryUnitRepository,
 )
+from app.workers.telemetry_generator import generate_backfill
 
 
 def configure_logging(log_level: str) -> None:
@@ -75,7 +77,29 @@ async def lifespan(app: FastAPI):
     logger.info("Initial data initialized")
     logger.info("Health endpoint ready")
 
+    # Start backfill in background (non-blocking)
+    async def run_backfill():
+        """Run backfill generation in background."""
+        await asyncio.to_thread(
+            generate_backfill,
+            telemetry_service,
+            parameter_service,
+            settings,
+        )
+
+    backfill_task = asyncio.create_task(run_backfill())
+
+    logger.info("Application ready (backfill running in background)")
+
     yield
+
+    # Cancel backfill if still running
+    if not backfill_task.done():
+        backfill_task.cancel()
+        try:
+            await backfill_task
+        except asyncio.CancelledError:
+            pass
 
 
 app = FastAPI(

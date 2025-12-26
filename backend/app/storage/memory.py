@@ -198,6 +198,34 @@ class InMemoryParameterRepository:
         param_ids = self._parameters_by_unit.get(unit_id, [])
         return [self._parameters[pid] for pid in param_ids if pid in self._parameters]
 
+    def list_all(self) -> list[Parameter]:
+        """List all parameters.
+
+        Returns:
+            List of all parameters.
+        """
+        return list(self._parameters.values())
+
+    def update(self, parameter: Parameter) -> Parameter:
+        """Update a parameter.
+
+        Args:
+            parameter: The parameter to update.
+
+        Returns:
+            The updated parameter.
+
+        Raises:
+            ConflictError: If parameter with same ID does not exist.
+        """
+        if parameter.id not in self._parameters:
+            raise ConflictError(
+                "Parameter not found",
+                {"parameter_id": str(parameter.id)},
+            )
+        self._parameters[parameter.id] = parameter
+        return parameter
+
     def delete(self, parameter_id: UUID) -> bool:
         """Delete a parameter by ID.
 
@@ -291,6 +319,14 @@ class InMemoryTelemetryRepository:
 
         # Return telemetry data sorted by timestamp
         return [self._telemetry[tid] for _, tid in entries if tid in self._telemetry]
+
+    def list_all(self) -> list[TelemetryData]:
+        """List all telemetry data.
+
+        Returns:
+            List of all telemetry data.
+        """
+        return list(self._telemetry.values())
 
     def get_by_parameter_time_range(
         self,

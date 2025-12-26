@@ -145,6 +145,28 @@ class ParameterRepository(Protocol):
         """
         ...
 
+    def list_all(self) -> list[Parameter]:
+        """List all parameters.
+
+        Returns:
+            List of all parameters.
+        """
+        ...
+
+    def update(self, parameter: Parameter) -> Parameter:
+        """Update a parameter.
+
+        Args:
+            parameter: The parameter to update.
+
+        Returns:
+            The updated parameter.
+
+        Raises:
+            NotFoundError: If parameter not found.
+        """
+        ...
+
     def delete(self, parameter_id: UUID) -> bool:
         """Delete a parameter by ID.
 

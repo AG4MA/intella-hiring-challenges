@@ -78,6 +78,14 @@ class ParameterService:
         """
         return self._repo.get_by_unit(unit_id)
 
+    def list_all(self) -> list[Parameter]:
+        """List all parameters.
+
+        Returns:
+            List of all parameters.
+        """
+        return self._repo.list_all()
+
     def update(
         self,
         parameter_id: UUID,
