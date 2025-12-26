@@ -47,7 +47,6 @@ def _get_status_code_for_error(error: DomainError) -> int:
         ConflictError: status.HTTP_409_CONFLICT,
         DomainValidationError: status.HTTP_422_UNPROCESSABLE_ENTITY,
     }
-
     for error_type, status_code in error_status_map.items():
         if isinstance(error, error_type):
             return status_code
