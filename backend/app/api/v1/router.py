@@ -7,8 +7,13 @@ aggregating all v1 endpoint routers under the /v1 prefix.
 
 from fastapi import APIRouter
 
+from app.api.v1.endpoints import satellites
+
 # Create the main v1 router
 router = APIRouter()
+
+# Include endpoint routers
+router.include_router(satellites.router, prefix="/satellites", tags=["satellites"])
 
 
 @router.get("/")
@@ -24,7 +29,7 @@ async def root_v1():
         "docs": "/docs",
         "endpoints": {
             "health": "/health",
-            "satellites": "/v1/satellites (coming soon)",
+            "satellites": "/v1/satellites",
             "telemetry": "/v1/telemetry (coming soon)",
         },
     }
